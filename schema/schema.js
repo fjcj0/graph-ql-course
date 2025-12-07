@@ -2,11 +2,11 @@ import graphql from 'graphql';
 import _ from 'lodash';
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt } = graphql;
 const books = [
-    { name: 'Fight', genre: 'Fantasy', id: '1' },
-    { name: '1984', genre: 'Dystopian', id: '2' },
-    { name: 'To Kill a Mockingbird', genre: 'Classic', id: '3' },
-    { name: 'The Hobbit', genre: 'Fantasy', id: '4' },
-    { name: 'Dune', genre: 'Science Fiction', id: '5' }
+    { name: 'Fight', genre: 'Fantasy', id: '1', authorId: '1' },
+    { name: '1984', genre: 'Dystopian', id: '2', authorId: '2' },
+    { name: 'To Kill a Mockingbird', genre: 'Classic', id: '3', authorId: '3' },
+    { name: 'The Hobbit', genre: 'Fantasy', id: '4', authorId: '4' },
+    { name: 'Dune', genre: 'Science Fiction', id: '5', authorId: '5' }
 ];
 const authors = [
     { name: 'James', age: 44, id: '1' },
@@ -40,6 +40,12 @@ const BookType = new GraphQLObjectType({
         },
         genre: {
             type: GraphQLString
+        },
+        author: {
+            type: AuthorType,
+            resolve(parent, args) {
+                return _.find(authors, { id: parent.authorId });
+            }
         }
     }),
 });
