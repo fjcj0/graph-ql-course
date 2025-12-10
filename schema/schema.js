@@ -1,35 +1,53 @@
 import graphql from 'graphql';
-import _ from 'lodash';
 import { Book } from '../models/book.model.js';
 import { Author } from '../models/author.model.js';
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList } = graphql;
+const {
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLSchema,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLList
+} = graphql;
 const AuthorType = new GraphQLObjectType({
     name: 'Author',
     fields: () => ({
-        id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        age: { type: GraphQLInt },
+        id: {
+            type: GraphQLID
+        },
+        name: {
+            type: GraphQLString
+        },
+        age: {
+            type: GraphQLInt
+        },
         books: {
             type: new GraphQLList(BookType),
             resolve(parent, args) {
-                //return _.filter(books, { authorId: parent.id });
+                return Book.find({ authorId: parent.id });
             }
         }
-    }),
+    })
 });
 const BookType = new GraphQLObjectType({
     name: 'Book',
     fields: () => ({
-        id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        genre: { type: GraphQLString },
+        id: {
+            type: GraphQLID
+        },
+        name: {
+            type: GraphQLString
+        },
+        genre: {
+            type: GraphQLString
+        },
         author: {
             type: AuthorType,
             resolve(parent, args) {
-                //return _.find(authors, { id: parent.authorId });
+                return Author.findById(parent.authorId);
             }
         }
-    }),
+    })
 });
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
@@ -38,26 +56,26 @@ const RootQuery = new GraphQLObjectType({
             type: BookType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
-                //return _.find(books, { id: args.id });
+                return Book.findById(args.id);
             }
         },
         author: {
             type: AuthorType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
-                //return _.find(authors, { id: args.id });
+                return Author.findById(args.id);
             }
         },
         books: {
             type: new GraphQLList(BookType),
-            resolve(parent, args) {
-                //return books;
+            resolve() {
+                return Book.find({});
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
-            resolve(parent, args) {
-                //return authors;
+            resolve() {
+                return Author.find({});
             }
         }
     }
@@ -68,12 +86,8 @@ const Mutation = new GraphQLObjectType({
         addAuthor: {
             type: AuthorType,
             args: {
-                name: {
-                    type: GraphQLString,
-                },
-                age: {
-                    type: GraphQLInt,
-                }
+                name: { type: GraphQLString },
+                age: { type: GraphQLInt }
             },
             resolve(parent, args) {
                 const author = new Author({
@@ -86,21 +100,15 @@ const Mutation = new GraphQLObjectType({
         addBook: {
             type: BookType,
             args: {
-                name: {
-                    type: GraphQLString
-                },
-                genre: {
-                    type: GraphQLString,
-                },
-                authorId: {
-                    type: GraphQLID
-                }
+                name: { type: GraphQLString },
+                genre: { type: GraphQLString },
+                authorId: { type: GraphQLID }
             },
             resolve(parent, args) {
                 const book = new Book({
                     name: args.name,
                     genre: args.genre,
-                    authorId: args.authorId,
+                    authorId: args.authorId
                 });
                 return book.save();
             }
