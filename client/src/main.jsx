@@ -1,6 +1,10 @@
 import { createRoot } from 'react-dom/client';
+import { ApolloProvider } from '@apollo/client';
 import './index.css';
 import App from './App.jsx';
+import { client } from './utils/ConnectApollo.jsx';
 createRoot(document.getElementById('root')).render(
-  <App />
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>
 );

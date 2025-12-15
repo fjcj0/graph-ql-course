@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import BookList from './components/BookList';
 function App() {
-  const [count, setCount] = useState(0);
   return (
-    <div className='text-red-400'>
-      <h1>hello world</h1>
+    <div>
+      <h1>LeetCoding's Reading Book</h1>
+      <BookList />
     </div>
   );
 }
