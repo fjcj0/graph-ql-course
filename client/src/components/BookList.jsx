@@ -1,43 +1,45 @@
 import React from 'react';
-import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import AddBook from './AddBook';
-const GET_BOOKS_QUERY = gql`
-  {
-    books {
-      id
-      name
-      genre
-      author {
-        id
-        name
-        age
-      }
-    }
-  }
-`;
+import AddBook, { GET_BOOKS_QUERY } from './AddBook';
 const BookList = () => {
   const { loading, error, data } = useQuery(GET_BOOKS_QUERY);
   if (loading) return <p className="text-gray-500">Loading books...</p>;
   if (error) return <p className="text-red-500">Error 😢</p>;
   return (
-    <div className="max-w-5xl mx-auto my-10">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-700">Book List</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="max-w-6xl mx-auto">
+      <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
+        📖 Book Collection
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {data.books.map((book) => (
           <div
             key={book.id}
-            className="p-4 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition"
+            className="relative group bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
           >
-            <h3 className="text-xl font-semibold text-gray-800">{book.name}</h3>
-            <p className="text-gray-600"><span className="font-medium">Genre:</span> {book.genre}</p>
-            <p className="text-gray-600">
-              <span className="font-medium">Author:</span> {book.author?.name || 'Unknown'} —{' '}
-              <span className="font-medium">Age:</span> {book.author?.age || 'N/A'}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition" />
+
+            <h3 className="relative text-2xl font-bold text-gray-800">
+              {book.name}
+            </h3>
+
+            <p className="relative mt-3 text-gray-600">
+              <span className="font-semibold">Genre:</span> {book.genre}
+            </p>
+
+            <p className="relative mt-1 text-gray-600">
+              <span className="font-semibold">Author:</span>{" "}
+              {book.author?.name || "Unknown"}{" "}
+              {book.author?.age && (
+                <span className="text-sm text-gray-400">
+                  ({book.author.age} yrs)
+                </span>
+              )}
             </p>
           </div>
         ))}
       </div>
+
       <AddBook />
     </div>
   );
